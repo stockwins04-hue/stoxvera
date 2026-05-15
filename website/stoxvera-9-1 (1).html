@@ -1,0 +1,2880 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stoxvera Research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    :root {
+      --bg: #080808;
+      --bg2: #0f0f0f;
+      --bg3: #141414;
+      --orange: #ff6b00;
+      --orange2: #ff8c00;
+      --orangeGlow: rgba(255, 107, 0, 0.35);
+      --glass: rgba(255, 255, 255, 0.04);
+      --glassBorder: rgba(255, 107, 0, 0.18);
+      --text: #f0ede8;
+      --muted: #888;
+      --green: #00e676;
+      --red: #ff1744;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0b0b0b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--orange);
+      border-radius: 3px;
+    }
+
+    /* ─── PAGES ─── */
+    .page {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ─── TICKER BAR ─── */
+    .ticker-bar {
+      background: #0a0a0a;
+      border-bottom: 1px solid rgba(255, 107, 0, 0.2);
+      height: 36px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .ticker-track {
+      display: flex;
+      gap: 60px;
+      animation: tickerScroll 30s linear infinite;
+      white-space: nowrap;
+      padding: 0 20px;
+    }
+
+    .ticker-item {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .ticker-name {
+      color: var(--muted);
+    }
+
+    .ticker-val {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .ticker-chg.up {
+      color: var(--green);
+    }
+
+    .ticker-chg.dn {
+      color: var(--red);
+    }
+
+    @keyframes tickerScroll {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: sticky;
+      top: 36px;
+      z-index: 199;
+      background: rgba(8, 8, 8, 0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glassBorder);
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--orange);
+      text-shadow: 0 0 20px var(--orangeGlow), 0 0 40px var(--orangeGlow);
+      cursor: pointer;
+    }
+
+    .logo span {
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .nav-links li a {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all .25s;
+      cursor: pointer;
+    }
+
+    .nav-links li a:hover,
+    .nav-links li a.active {
+      color: var(--orange);
+      background: rgba(255, 107, 0, .08);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--orange);
+      border-radius: 2px;
+      transition: .3s;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 100px;
+      left: 0;
+      right: 0;
+      background: rgba(8, 8, 8, 0.98);
+      border-bottom: 1px solid var(--glassBorder);
+      padding: 20px;
+      z-index: 198;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    .mobile-menu a {
+      color: var(--muted);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: .25s;
+      cursor: pointer;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--orange);
+      border-color: var(--glassBorder);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 100px);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 60px 40px;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(255, 107, 0, 0.07) 0%, transparent 70%);
+    }
+
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 107, 0, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 107, 0, .05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridPulse 8s ease-in-out infinite;
+    }
+
+    @keyframes gridPulse {
+
+      0%,
+      100% {
+        opacity: .4;
+      }
+
+      50% {
+        opacity: .8;
+      }
+    }
+
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--orange);
+      border-radius: 50%;
+      animation: float var(--d, 8s) ease-in-out infinite;
+      opacity: .4;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) translateX(0);
+        opacity: .2;
+      }
+
+      50% {
+        transform: translateY(var(--ty, -40px)) translateX(var(--tx, 20px));
+        opacity: .6;
+      }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 560px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 107, 0, .1);
+      border: 1px solid var(--glassBorder);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--orange);
+      margin-bottom: 28px;
+      text-transform: uppercase;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 8px var(--orange);
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .3;
+      }
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 5vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 .accent {
+      color: var(--orange);
+      text-shadow: 0 0 30px var(--orangeGlow);
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      padding: 13px 28px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      cursor: pointer;
+      transition: all .25s;
+      font-family: 'Outfit', sans-serif;
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: var(--orange2);
+      box-shadow: 0 0 30px var(--orangeGlow);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--orange);
+      border: 1.5px solid var(--orange);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 107, 0, .1);
+      box-shadow: 0 0 20px var(--orangeGlow);
+      transform: translateY(-2px);
+    }
+
+    .hero-form-wrap {
+      position: relative;
+      z-index: 2;
+      margin-left: auto;
+      background: var(--glass);
+      backdrop-filter: blur(30px);
+      border: 1px solid var(--glassBorder);
+      border-radius: 20px;
+      padding: 36px;
+      width: 380px;
+      flex-shrink: 0;
+      box-shadow: 0 0 60px rgba(255, 107, 0, .08);
+    }
+
+    .form-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .form-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .field {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--orange);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 107, 0, .2);
+      border-radius: 10px;
+      padding: 13px 16px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: all .25s;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(255, 107, 0, .12);
+      background: rgba(255, 107, 0, .05);
+    }
+
+    .field select option {
+      background: #1a1a1a;
+      color: var(--text);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: var(--orange);
+      color: #000;
+      font-weight: 800;
+      font-size: 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: .5px;
+      transition: all .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover {
+      background: var(--orange2);
+      box-shadow: 0 0 30px var(--orangeGlow);
+      transform: translateY(-2px);
+    }
+
+    .submit-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .msg-success {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      color: var(--green);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .msg-error {
+      display: none;
+      text-align: center;
+      padding: 10px;
+      color: var(--red);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    /* ─── SECTIONS ─── */
+    section {
+      padding: 80px 40px;
+      position: relative;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 540px;
+      line-height: 1.7;
+    }
+
+    /* ─── WHY CHOOSE US ─── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .glass-card {
+      background: var(--glass);
+      border: 1px solid var(--glassBorder);
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: all .35s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 107, 0, .05), transparent);
+      opacity: 0;
+      transition: .35s;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 107, 0, .4);
+      box-shadow: 0 20px 60px rgba(255, 107, 0, .15);
+    }
+
+    .glass-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(255, 107, 0, .12);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 107, 0, .2);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .card-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonials-wrap {
+      position: relative;
+      overflow: hidden;
+      margin-top: 56px;
+    }
+
+    .testimonials-track {
+      display: flex;
+      gap: 24px;
+      animation: slideLeft 25s linear infinite;
+      width: max-content;
+    }
+
+    .testimonials-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes slideLeft {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    .testi-card {
+      background: var(--glass);
+      border: 1px solid var(--glassBorder);
+      border-radius: 16px;
+      padding: 28px;
+      width: 320px;
+      flex-shrink: 0;
+    }
+
+    .testi-stars {
+      color: var(--orange);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .testi-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .testi-author {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .testi-role {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ─── PRICING ─── */
+    .pricing-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--orange);
+      margin: 48px 0 24px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-left: 3px solid var(--orange);
+      padding-left: 16px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+
+    .pricing-card {
+      background: var(--glass);
+      border: 1px solid var(--glassBorder);
+      border-radius: 20px;
+      padding: 36px 30px;
+      transition: all .35s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--orange);
+      background: linear-gradient(135deg, rgba(255, 107, 0, .08), rgba(255, 107, 0, .02));
+    }
+
+    .pricing-card.featured::after {
+      content: 'BEST VALUE';
+      position: absolute;
+      top: 20px;
+      right: -28px;
+      background: var(--orange);
+      color: #000;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 36px;
+      transform: rotate(45deg);
+      letter-spacing: 1px;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 30px 80px rgba(255, 107, 0, .2);
+    }
+
+    .plan-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--orange);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .plan-price {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .plan-price span {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .plan-period {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .plan-features li {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .plan-features li::before {
+      content: '✓';
+      color: var(--orange);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .plan-btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--orange);
+      color: #000;
+      font-weight: 800;
+      font-size: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: all .3s;
+    }
+
+    .plan-btn:hover {
+      background: var(--orange2);
+      box-shadow: 0 0 30px var(--orangeGlow);
+    }
+
+    /* ─── KYC ─── */
+    .kyc-wrap {
+      max-width: 560px;
+      margin: 40px auto;
+      background: var(--glass);
+      border: 1px solid var(--glassBorder);
+      border-radius: 20px;
+      padding: 48px 40px;
+    }
+
+    .file-upload-wrap {
+      border: 2px dashed rgba(255, 107, 0, .3);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: .3s;
+      background: rgba(255, 107, 0, .03);
+    }
+
+    .file-upload-wrap:hover {
+      border-color: var(--orange);
+      background: rgba(255, 107, 0, .06);
+    }
+
+    .file-upload-wrap input {
+      display: none;
+    }
+
+    .file-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .upload-icon {
+      font-size: 28px;
+    }
+
+    /* ─── PAYMENT ─── */
+    .payment-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .payment-card {
+      background: var(--glass);
+      border: 1px solid var(--glassBorder);
+      border-radius: 20px;
+      padding: 40px 30px;
+      text-align: center;
+      transition: all .35s;
+    }
+
+    .payment-card:hover {
+      border-color: var(--orange);
+      box-shadow: 0 20px 60px rgba(255, 107, 0, .15);
+      transform: translateY(-6px);
+    }
+
+    .payment-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .payment-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .payment-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .qr-box {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 16px;
+      background: white;
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-box svg {
+      width: 140px;
+      height: 140px;
+    }
+
+    .bank-detail {
+      text-align: left;
+      margin-bottom: 10px;
+    }
+
+    .bank-detail .label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .bank-detail .val {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .copy-btn {
+      background: rgba(255, 107, 0, .1);
+      border: 1px solid var(--glassBorder);
+      color: var(--orange);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: .2s;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 107, 0, .2);
+    }
+
+    /* Card flip */
+    .card-3d {
+      width: 320px;
+      height: 190px;
+      perspective: 1000px;
+      margin: 0 auto 20px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform .7s;
+    }
+
+    .card-3d:hover .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      backface-visibility: hidden;
+      padding: 24px;
+      background: linear-gradient(135deg, #1a1a1a, #2a1a00);
+      border: 1px solid var(--glassBorder);
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(135deg, #2a1a00, #1a1a1a);
+    }
+
+    .card-chip {
+      width: 44px;
+      height: 32px;
+      background: linear-gradient(135deg, #d4a754, #b8860b);
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .card-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .card-logo {
+      text-align: right;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--orange);
+    }
+
+    .card-back-strip {
+      height: 40px;
+      background: #333;
+      margin-bottom: 20px;
+    }
+
+    /* ─── BANK DETAILS ─── */
+    .bank-card {
+      max-width: 480px;
+      margin: 40px auto;
+      background: var(--glass);
+      border: 1px solid var(--glassBorder);
+      border-radius: 20px;
+      padding: 48px 40px;
+      text-align: center;
+    }
+
+    .bank-logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--orange);
+      text-shadow: 0 0 20px var(--orangeGlow);
+      margin-bottom: 32px;
+      letter-spacing: 2px;
+    }
+
+    .bank-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+    }
+
+    .bank-row:last-child {
+      border: none;
+    }
+
+    .b-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .b-val {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ─── RESEARCH ANALYST ─── */
+    .analyst-hero {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+
+    .analyst-avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(255, 107, 0, .3), rgba(255, 107, 0, .1));
+      border: 3px solid var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      box-shadow: 0 0 40px var(--orangeGlow);
+    }
+
+    .analyst-info h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .analyst-info .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 107, 0, .1);
+      border: 1px solid var(--glassBorder);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 12px;
+      color: var(--orange);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .sebi-reg {
+      background: rgba(0, 230, 118, .08);
+      border: 1px solid rgba(0, 230, 118, .2);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: inline-flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .charter-section {
+      background: var(--glass);
+      border: 1px solid var(--glassBorder);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .charter-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 16px;
+    }
+
+    .charter-list {
+      list-style: none;
+    }
+
+    .charter-list li {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+      display: flex;
+      gap: 10px;
+      line-height: 1.6;
+    }
+
+    .charter-list li::before {
+      content: '→';
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    /* ─── CONTACT ─── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-top: 56px;
+      align-items: start;
+    }
+
+    .contact-info {
+      padding: 32px 0;
+    }
+
+    .contact-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 32px;
+    }
+
+    .c-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 107, 0, .1);
+      border: 1px solid var(--glassBorder);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #050505;
+      border-top: 1px solid rgba(255, 107, 0, .1);
+      padding: 60px 40px 100px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--orange);
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .footer-col h4 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .footer-col a {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      text-decoration: none;
+      transition: .2s;
+      cursor: pointer;
+    }
+
+    .footer-col a:hover {
+      color: var(--orange);
+    }
+
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, .05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ─── DISCLAIMER BAR ─── */
+    .disclaimer-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, .95);
+      border-top: 1px solid rgba(255, 107, 0, .3);
+      padding: 8px 0;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .disclaimer-bar marquee {
+      color: rgba(255, 200, 100, .8);
+    }
+
+    /* ─── PRIVACY / TERMS ─── */
+    .legal-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    .legal-wrap h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .legal-wrap .updated {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+
+    .legal-wrap h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--orange);
+      margin: 32px 0 12px;
+    }
+
+    .legal-wrap p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+
+    .legal-wrap ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .legal-wrap ul li {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.8;
+      padding: 4px 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    .legal-wrap ul li::before {
+      content: '•';
+      color: var(--orange);
+    }
+
+    /* ─── LOADING ─── */
+    #loadingScreen {
+      position: fixed;
+      inset: 0;
+      background: #080808;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity .6s;
+    }
+
+    .load-logo {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--orange);
+      text-shadow: 0 0 40px var(--orangeGlow);
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .4;
+      }
+    }
+
+    .load-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(255, 107, 0, .2);
+      border-radius: 3px;
+      margin-top: 24px;
+      overflow: hidden;
+    }
+
+    .load-fill {
+      height: 100%;
+      background: var(--orange);
+      animation: fill 1.5s ease-out forwards;
+    }
+
+    @keyframes fill {
+      0% {
+        width: 0;
+      }
+
+      100% {
+        width: 100%;
+      }
+    }
+
+    /* ─── LIVE MARKET ─── */
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .market-card {
+      background: var(--glass);
+      border: 1px solid var(--glassBorder);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .market-name {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .market-val {
+      font-size: 24px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .market-chg {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .market-chg.up {
+      color: var(--green);
+    }
+
+    .market-chg.dn {
+      color: var(--red);
+    }
+
+    .mini-chart {
+      height: 50px;
+      margin-top: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mini-chart svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media(max-width:900px) {
+      nav {
+        padding: 0 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .hero {
+        flex-direction: column;
+        padding: 40px 20px;
+        gap: 40px;
+      }
+
+      .hero-form-wrap {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 60px 20px;
+      }
+
+      .legal-wrap {
+        padding: 40px 20px;
+      }
+
+      .kyc-wrap {
+        margin: 20px;
+        padding: 32px 24px;
+      }
+
+      .analyst-hero {
+        flex-direction: column;
+      }
+    }
+
+    @media(max-width:600px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .pricing-card.featured::after {
+        display: none;
+      }
+
+      .bank-card {
+        margin: 20px;
+        padding: 32px 24px;
+      }
+
+      .payment-options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ─── ANIMATIONS ─── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeIn .7s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-delay-1 {
+      animation-delay: .1s;
+    }
+
+    .fade-in-delay-2 {
+      animation-delay: .2s;
+    }
+
+    .fade-in-delay-3 {
+      animation-delay: .3s;
+    }
+
+    .fade-in-delay-4 {
+      animation-delay: .4s;
+    }
+
+    .sebi-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 230, 118, .08);
+      border: 1px solid rgba(0, 230, 118, .2);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--green);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glassBorder), transparent);
+      margin: 0 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loadingScreen">
+    <div class="load-logo">STOXVERA</div>
+    <div class="load-bar">
+      <div class="load-fill"></div>
+    </div>
+  </div>
+
+  <!-- TICKER BAR -->
+  <div class="ticker-bar">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo" onclick="showPage('home')">STOX<span>VERA</span></div>
+    <ul class="nav-links" id="navLinks">
+      <li><a onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
+      <li><a onclick="showPage('pricing')" id="nav-pricing">Pricing</a></li>
+      <li><a onclick="showPage('bank')" id="nav-bank">Bank Details</a></li>
+      <li><a onclick="showPage('analyst')" id="nav-analyst">Research Analyst</a></li>
+      <li><a onclick="showPage('kyc')" id="nav-kyc">KYC</a></li>
+      <li><a onclick="showPage('contact')" id="nav-contact">Contact Us</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a onclick="showPage('disclosure');toggleMenu()">Disclosure</a>
+    <a onclick="showPage('home');toggleMenu()">Home</a>
+    <a onclick="showPage('pricing');toggleMenu()">Pricing</a>
+    <a onclick="showPage('bank');toggleMenu()">Bank Details</a>
+    <a onclick="showPage('analyst');toggleMenu()">Research Analyst</a>
+    <a onclick="showPage('kyc');toggleMenu()">KYC</a>
+    <a onclick="showPage('contact');toggleMenu()">Contact Us</a>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════════ -->
+  <div class="page active" id="page-home">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-bg"></div>
+      <div class="grid-bg"></div>
+      <div class="particles" id="particles"></div>
+
+      <div class="hero-content">
+        <div class="hero-badge fade-in">📈 SEBI Registered Research Analyst</div>
+        <h1 class="fade-in fade-in-delay-1">
+          Trade Smarter<br>with <span class="accent">Stoxvera</span>
+        </h1>
+        <p class="fade-in fade-in-delay-2">Expert Research-Based Trading Services. Backed by 9 years of market
+          experience and SEBI-registered research analysis.</p>
+        <div class="btn-row fade-in fade-in-delay-3">
+          <button class="btn btn-primary" onclick="showPage('pricing')">📊 View Plans</button>
+          <button class="btn btn-outline" onclick="showPage('kyc')">🚀 Get Started</button>
+        </div>
+
+      </div>
+
+      <!-- LEAD FORM -->
+      <div class="hero-form-wrap fade-in fade-in-delay-2">
+        <div class="form-title">Get Free Consultation</div>
+        <div class="form-sub">Fill in your details — our expert will call you back.</div>
+        <div id="leadFormBox">
+          <div class="field">
+            <label>Full Name</label>
+            <input type="text" id="lead_name" placeholder="Rahul Sharma" required>
+          </div>
+          <div class="field">
+            <label>Email Address</label>
+            <input type="email" id="lead_email" placeholder="rahul@gmail.com" required>
+          </div>
+          <div class="field">
+            <label>Mobile Number</label>
+            <input type="tel" id="lead_mobile" placeholder="+91 9XXXXXXXXX" required>
+          </div>
+          <div class="field">
+            <label>City</label>
+            <input type="text" id="lead_city" placeholder="Mumbai">
+          </div>
+          <div class="field">
+            <label>Investment Capital</label>
+            <Select id="lead_capital">
+              <option value="">Select Amount</option>
+              <option>₹10,000 – ₹50,000</option>
+              <option>₹50,000 – ₹1,00,000</option>
+              <option>₹1,00,000+</option>
+            </select>
+          </div>
+          <button class="submit-btn" id="leadBtn" onclick="submitLead()">👉 Get Started</button>
+          <div class="msg-error" id="leadError"></div>
+        </div>
+        <div class="msg-success" id="leadSuccess">
+          ✅ Thank you! Our expert will contact you shortly.<br>
+          <small style="color:var(--muted);font-size:12px;">Redirecting to KYC...</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHY CHOOSE US -->
+    <section>
+      <div class="section-label">Why Stoxvera</div>
+      <div class="section-title">Trade with Confidence</div>
+      <div class="section-sub">We combine deep market research with technology to deliver high-accuracy trading signals.
+      </div>
+      <div class="cards-grid">
+        <div class="glass-card">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">High Accuracy Tips</div>
+          <div class="card-text">Our research-backed calls consistently deliver 80%+ accuracy across equity and index
+            options.</div>
+        </div>
+        <div class="glass-card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Real-Time Alerts</div>
+          <div class="card-text">Instant WhatsApp & SMS alerts with precise entry, target, and stop-loss levels.</div>
+        </div>
+        <div class="glass-card">
+          <div class="card-icon">🛡️</div>
+          <div class="card-title">SEBI Registered</div>
+          <div class="card-text">Fully compliant with SEBI regulations. Registration No: INH000021881.</div>
+        </div>
+        <div class="glass-card">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Risk Management</div>
+          <div class="card-text">Every recommendation includes target & stop-loss. We protect your capital first.</div>
+        </div>
+        <div class="glass-card">
+          <div class="card-icon">🤝</div>
+          <div class="card-title">24/7 Support</div>
+          <div class="card-text">Dedicated support team available round the clock for your queries and guidance.</div>
+        </div>
+        <div class="glass-card">
+          <div class="card-icon">📈</div>
+          <div class="card-title">4:1 Reward Ratio</div>
+          <div class="card-text">Our strategies are designed for a minimum 4:1 risk-reward ratio on every trade.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- LIVE MARKET -->
+    <section>
+      <div class="section-label">Market Pulse</div>
+      <div class="section-title">Live Market Overview</div>
+      <div class="market-grid" id="marketGrid"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- TESTIMONIALS -->
+    <section>
+      <div class="section-label">Client Success</div>
+      <div class="section-title">What Our Traders Say</div>
+      <div class="testimonials-wrap">
+        <div class="testimonials-track" id="testiTrack"></div>
+      </div>
+    </section>
+
+  </div><!-- end home page -->
+
+  <!-- ══════════════════════════════════════
+     PAGE: PRICING
+══════════════════════════════════════ -->
+  <div class="page" id="page-pricing">
+    <section>
+      <div class="section-label">Our Plans</div>
+      <div class="section-title">Choose Your Strategy</div>
+      <div class="section-sub">Premium research plans designed for every type of trader. All prices inclusive of GST.
+      </div>
+
+      <!-- INDEX OPTION -->
+      <div class="pricing-section-title">📊 Index Option</div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="plan-name">Basic Plan</div>
+          <div class="plan-price">₹21,999 <span>/ Month</span></div>
+          <div class="plan-period">Inclusive GST</div>
+          <ul class="plan-features">
+            <li>Financial Planning for 2</li>
+            <li>Portfolio Management</li>
+            <li>Profit up to ₹4,000 per trade</li>
+            <li>Target &amp; Stop Loss</li>
+            <li>24/7 Support</li>
+            <li>Ratio 4:1</li>
+          </ul>
+          <button class="plan-btn" onclick="showPage('kyc')">Get Started →</button>
+        </div>
+        <div class="pricing-card featured">
+          <div class="plan-name">Premium Plan</div>
+          <div class="plan-price">₹47,649 <span>/ 3 Months</span></div>
+          <div class="plan-period">Inclusive GST</div>
+          <ul class="plan-features">
+            <li>1 Heavy Momentum Tip</li>
+            <li>Investment ₹1,00,000 per trade</li>
+            <li>Profit up to ₹15,000</li>
+            <li>Intraday &amp; BTST Tips</li>
+            <li>Target &amp; Stop Loss</li>
+            <li>24/7 Support</li>
+            <li>Ratio 4:1</li>
+          </ul>
+          <button class="plan-btn" onclick="showPage('kyc')">Get Started →</button>
+        </div>
+      </div>
+
+      <!-- EQUITY GOLD -->
+      <div class="pricing-section-title">💛 Equity Gold</div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="plan-name">Basic Plan</div>
+          <div class="plan-price">₹9,999 <span>/ Month</span></div>
+          <div class="plan-period">Inclusive GST</div>
+          <ul class="plan-features">
+            <li>Financial Planning for 2</li>
+            <li>Portfolio Management</li>
+            <li>Profit up to ₹4,000 per trade</li>
+            <li>Target &amp; Stop Loss</li>
+            <li>24/7 Support</li>
+            <li>Ratio 4:1</li>
+          </ul>
+          <button class="plan-btn" onclick="showPage('kyc')">Get Started →</button>
+        </div>
+        <div class="pricing-card featured">
+          <div class="plan-name">Premium Plan</div>
+          <div class="plan-price">₹21,299 <span>/ 3 Months</span></div>
+          <div class="plan-period">Inclusive GST</div>
+          <ul class="plan-features">
+            <li>1 Heavy Momentum Tip</li>
+            <li>Investment ₹1,00,000 per trade</li>
+            <li>Profit up to ₹15,000</li>
+            <li>Intraday &amp; BTST Tips</li>
+            <li>Target &amp; Stop Loss</li>
+            <li>24/7 Support</li>
+            <li>Ratio 4:1</li>
+          </ul>
+          <button class="plan-btn" onclick="showPage('kyc')">Get Started →</button>
+        </div>
+      </div>
+
+      <!-- PLATINUM -->
+      <div class="pricing-section-title">💎 Platinum</div>
+      <div class="pricing-grid">
+        <div class="pricing-card featured" style="max-width:420px;">
+          <div class="plan-name">🔥 Premium Plan – Best of the Best</div>
+          <div class="plan-price">₹97,949 <span>/ 6 Months</span></div>
+          <div class="plan-period">Inclusive GST · Exclusive Membership</div>
+          <ul class="plan-features">
+            <li>Priority Access – All Segments</li>
+            <li>Dedicated Research Manager</li>
+            <li>Investment ₹2,00,000 per trade</li>
+            <li>Profit up to ₹25,000+ per trade</li>
+            <li>VIP Intraday, BTST &amp; Positional Tips</li>
+            <li>Portfolio Review &amp; Restructuring</li>
+            <li>Target &amp; Stop Loss – Always</li>
+            <li>24/7 Priority Support</li>
+            <li>Ratio 4:1 Minimum</li>
+            <li>Exclusive Market Webinars</li>
+          </ul>
+          <button class="plan-btn" onclick="showPage('kyc')">Claim Platinum Access →</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PAGE: BANK DETAILS
+══════════════════════════════════════ -->
+  <div class="page" id="page-bank">
+    <section>
+      <div class="section-label">Payment Details</div>
+      <div class="section-title">Bank Account Details</div>
+      <div class="section-sub">All payments must be made directly to Stoxvera's official bank account only.</div>
+      <div class="bank-card">
+        <div class="bank-logo">STOXVERA RESEARCH</div>
+        <div
+          style="background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);border-radius:10px;padding:12px 16px;margin-bottom:28px;font-size:13px;color:var(--green);">
+          ✅ Axis Bank · Verified Business Account
+        </div>
+        <div class="bank-row">
+          <span class="b-label">Account Name</span>
+          <span class="b-val">STOXVERA RESEARCH <button class="copy-btn"
+              onclick="copyText('STOXVERA RESEARCH')">Copy</button></span>
+        </div>
+        <div class="bank-row">
+          <span class="b-label">Account Number</span>
+          <span class="b-val">925020001092774 <button class="copy-btn"
+              onclick="copyText('925020001092774')">Copy</button></span>
+        </div>
+        <div class="bank-row">
+          <span class="b-label">IFSC Code</span>
+          <span class="b-val">UTIB0001062 <button class="copy-btn"
+              onclick="copyText('UTIB0001062')">Copy</button></span>
+        </div>
+        <div class="bank-row">
+          <span class="b-label">Branch</span>
+          <span class="b-val">Dindoshi, Mumbai</span>
+        </div>
+        <div class="bank-row">
+          <span class="b-label">Bank</span>
+          <span class="b-val">Axis Bank</span>
+        </div>
+        <div
+          style="margin-top:28px;padding:16px;background:rgba(255,107,0,.05);border:1px solid rgba(255,107,0,.2);border-radius:10px;font-size:12px;color:var(--muted);line-height:1.8;">
+          ⚠️ <strong style="color:var(--orange);">Important:</strong> Only make payments to the above official account.
+          Stoxvera does NOT accept payments in any personal or individual bank account. SEBI mandated fee collection
+          applies.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PAGE: RESEARCH ANALYST
+══════════════════════════════════════ -->
+  <div class="page" id="page-analyst">
+    <section>
+      <div class="section-label">Our Expert</div>
+      <div class="section-title">Research Analyst Profile</div>
+
+      <div class="analyst-hero">
+        <div class="analyst-avatar">👨‍💼</div>
+        <div class="analyst-info">
+          <h2>Rajendra Harishchandra Jadhav</h2>
+          <div class="badge">📊 20+ Years Market Experience</div>
+          <div class="sebi-reg">
+            <span style="font-size:22px">🛡️</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--green);">SEBI Registered Research Analyst</div>
+              <div style="font-size:12px;color:var(--muted);">Registration No: INH000021881 | Stoxvera</div>
+            </div>
+          </div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.8;">
+            Rajendra Jadhav brings 20+ years of hands-on market expertise spanning equity, derivatives, and index
+            options.
+            His research-driven approach consistently delivers high-accuracy calls with disciplined risk management.
+          </p>
+        </div>
+      </div>
+
+      <!-- Investor Charter -->
+      <div class="charter-section">
+        <h3>📜 Investor Charter</h3>
+        <ul class="charter-list">
+          <li>We provide unbiased, independent research recommendations based purely on market analysis.</li>
+          <li>All research is conducted without any conflict of interest with subject companies.</li>
+          <li>We do not trade in securities that are subject matter of our recommendations.</li>
+          <li>No compensation received from companies covered in our research reports.</li>
+          <li>All investment decisions remain solely with the investor.</li>
+          <li>Past performance of recommendations is not indicative of future results.</li>
+        </ul>
+      </div>
+
+      <!-- SEBI Complaint Process -->
+      <div class="charter-section">
+        <h3>📋 SEBI Complaint Process</h3>
+        <ul class="charter-list">
+          <li>File complaints at: <strong style="color:var(--orange);">scores.gov.in</strong> (SEBI SCORES Portal)</li>
+          <li>SEBI Toll-Free: <strong style="color:var(--orange);">1800 22 7575</strong> or <strong
+              style="color:var(--orange);">1800 266 7575</strong></li>
+          <li>Compliance email: <strong style="color:var(--orange);">sales@stoxvera.in</strong></li>
+          <li>All grievances are addressed within 30 days as per SEBI guidelines.</li>
+          <li>Report unethical practices immediately to our compliance team.</li>
+        </ul>
+      </div>
+
+      <!-- Do's & Don'ts -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex-wrap:wrap;">
+        <div class="charter-section">
+          <h3 style="color:var(--green);">✅ Investor Do's</h3>
+          <ul class="charter-list">
+            <li>Always verify SEBI registration before availing research services.</li>
+            <li>Read all disclaimers, terms and conditions carefully.</li>
+            <li>Pay fees only to official Stoxvera bank account.</li>
+            <li>Invest only according to your risk appetite.</li>
+            <li>Keep records of all transactions and communications.</li>
+          </ul>
+        </div>
+        <div class="charter-section">
+          <h3 style="color:var(--red);">❌ Investor Don'ts</h3>
+          <ul class="charter-list">
+            <li>Don't pay fees in personal bank accounts or UPI of individuals.</li>
+            <li>Don't invest based solely on research without your own due diligence.</li>
+            <li>Don't expect guaranteed returns — markets are subject to risk.</li>
+            <li>Don't share account credentials or OTP with anyone.</li>
+            <li>Don't be misled by promises of fixed profits.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ── FULL OFFICIAL DISCLOSURE ── -->
+
+      <!-- Purpose -->
+      <div class="charter-section" style="margin-top:24px;">
+        <h3>📄 Disclosure</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:0;">
+          The purpose of this document is to provide essential information about the Research Services in a manner to
+          assist and enable the prospective client/client in making an informed decision for engaging in Research
+          services before onboarding.
+        </p>
+      </div>
+
+      <!-- History & Background -->
+      <div class="charter-section">
+        <h3>🏛️ History, Present Business and Background</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:0;">
+          Rajendra Jadhav, SEBI Research Analyst: <strong style="color:var(--orange);">INH000021881</strong> in the name
+          <strong style="color:var(--orange);">STOXVERA</strong>, and is engaged in offering research and recommendation
+          services.
+        </p>
+      </div>
+
+      <!-- Terms & Conditions of Research Services -->
+      <div class="charter-section">
+        <h3>📋 Terms and Conditions of Research Services</h3>
+        <ul class="charter-list">
+          <li>The Research Services will be limited to providing independent research recommendation and shall not be
+            involved in any advisory or portfolio allocation services.</li>
+          <li>The Research Analyst never guarantees the returns on the recommendation provided. Investor shall take note
+            that Investment/trading in stocks/Index or other securities is always subject to market risk. Past
+            performance is never a guarantee of same future results.</li>
+          <li>The Research Analyst shall not be responsible for any loss to the Investors.</li>
+        </ul>
+      </div>
+
+      <!-- Disciplinary History -->
+      <div class="charter-section">
+        <h3>⚖️ Disciplinary History</h3>
+        <ul class="charter-list">
+          <li>There are no pending material litigations or legal proceedings against the Research Analyst.</li>
+          <li>As on date, no penalties / directions have been issued by SEBI under the SEBI Act or Regulations made
+            thereunder against the Research Analyst relating to Research Analyst services.</li>
+        </ul>
+      </div>
+
+      <!-- Associates -->
+      <div class="charter-section">
+        <h3>🤝 Details of Associates</h3>
+        <div
+          style="display:inline-flex;align-items:center;gap:12px;background:rgba(255,107,0,.08);border:1px solid var(--glassBorder);border-radius:10px;padding:14px 20px;">
+          <span style="font-size:22px;">👤</span>
+          <div>
+            <div style="font-size:15px;font-weight:700;color:var(--text);">ARBAAZ MANIHAR</div>
+            <div style="font-size:12px;color:var(--muted);">Associate · Stoxvera Research</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Disclosures re: Research & Recommendations -->
+      <div class="charter-section">
+        <h3>📑 Disclosures with respect to Research and Recommendations Services</h3>
+        <ul class="charter-list">
+          <li>The Research Analyst or any of its officer/employee does not trade in securities which are subject matter
+            of recommendation.</li>
+          <li>There are no actual or potential conflicts of interest arising from any connection to or association with
+            any issuer of products/securities, including any material information or facts that might compromise its
+            objectivity or independence in the carrying on of Research Analyst services. Such conflict of interest shall
+            be disclosed to the client as and when they arise.</li>
+          <li>Research Analyst or its employee or its associates have not received any compensation from the company
+            which is subject matter of recommendation.</li>
+          <li>Research Analyst or its employee or its associates have not managed or co-managed the public offering of
+            any company.</li>
+          <li>Research Analyst or its employee or its associates have not received any compensation for investment
+            banking or merchant banking of brokerage services from the subject company.</li>
+          <li>Research Analyst or its employee or its associates have not received any compensation for products or
+            services other than above from the subject company.</li>
+          <li>Research Analyst or its employee or its associates have not received any compensation or other benefits
+            from the Subject Company or 3rd party in connection with the research report/recommendation.</li>
+          <li>The subject company was not a client of Research Analyst or its employee or its associates during twelve
+            months preceding the date of recommendation services provided.</li>
+          <li>Research Analysts or its employee or its associates has not served as an officer, director or employee of
+            the subject company.</li>
+          <li>Research Analysts has not been engaged in market making activity of the subject company.</li>
+        </ul>
+      </div>
+
+      <!-- Standard Warning -->
+      <div
+        style="margin-top:8px;padding:24px 28px;background:linear-gradient(135deg,rgba(255,107,0,.08),rgba(255,107,0,.03));border:1.5px solid rgba(255,107,0,.35);border-radius:14px;text-align:center;">
+        <div
+          style="font-size:12px;color:var(--orange);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">
+          ⚠️ Standard Warning</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);line-height:1.8;">
+          "Investment in securities market are subject to market risks.<br>Read all the related documents carefully
+          before investing."
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PAGE: KYC
+══════════════════════════════════════ -->
+  <div class="page" id="page-kyc">
+    <section>
+      <div class="section-label">Registration</div>
+      <div class="section-title">KYC Verification</div>
+      <div class="section-sub">Complete your KYC to activate your trading research subscription. All data is encrypted
+        and secure.</div>
+
+      <div class="kyc-wrap">
+        <div id="kycFormBox">
+          <div class="field">
+            <label>Full Name *</label>
+            <input type="text" id="kyc_name" placeholder="Rahul Sharma" required>
+          </div>
+          <div class="field">
+            <label>Email Address *</label>
+            <input type="email" id="kyc_email" placeholder="rahul@gmail.com" required>
+          </div>
+          <div class="field">
+            <label>Mobile Number *</label>
+            <input type="tel" id="kyc_mobile" placeholder="+91 9XXXXXXXXX" required>
+          </div>
+          <div class="field">
+            <label>Investment Capital *</label>
+            <select id="kyc_capital">
+              <option value="">Select Amount</option>
+              <option>₹10,000 – ₹50,000</option>
+              <option>₹50,000 – ₹1,00,000</option>
+              <option>₹1,00,000+</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Aadhaar Card * (Upload)</label>
+            <div class="file-upload-wrap" onclick="document.getElementById('aadharFile').click()">
+              <input type="file" id="aadharFile" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile(this,'aadharLabel')">
+              <div class="upload-icon">📄</div>
+              <div class="file-label" id="aadharLabel">Click to upload Aadhaar Card</div>
+            </div>
+          </div>
+          <div class="field">
+            <label>PAN Card (Optional)</label>
+            <div class="file-upload-wrap" onclick="document.getElementById('panFile').click()">
+              <input type="file" id="panFile" accept=".pdf,.jpg,.jpeg,.png" onchange="showFile(this,'panLabel')">
+              <div class="upload-icon">🪪</div>
+              <div class="file-label" id="panLabel">Click to upload PAN Card (optional)</div>
+            </div>
+          </div>
+          <div
+            style="padding:12px 16px;background:rgba(255,107,0,.05);border:1px solid rgba(255,107,0,.15);border-radius:10px;font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.7;">
+            🔒 Your data is encrypted and secure. We follow strict SEBI data protection guidelines.
+          </div>
+          <button class="submit-btn" id="kycBtn" onclick="submitKYC()">✅ Submit KYC & Proceed to Payment</button>
+          <div class="msg-error" id="kycError"></div>
+        </div>
+        <div class="msg-success" id="kycSuccess">
+          ✅ KYC Submitted Successfully!<br>
+          <small style="color:var(--muted);font-size:12px;">Redirecting to payment page...</small>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PAGE: PAYMENT
+══════════════════════════════════════ -->
+  <div class="page" id="page-payment">
+    <section>
+      <div class="section-label">Secure Payment</div>
+      <div class="section-title">Complete Your Payment</div>
+      <div class="section-sub">Choose your preferred payment method. All transactions are secured with SSL encryption.
+      </div>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px;justify-content:center;">
+        <span
+          style="background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.2);padding:8px 16px;border-radius:8px;font-size:12px;color:var(--green);">🔒
+          SSL Secured</span>
+        <span
+          style="background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.2);padding:8px 16px;border-radius:8px;font-size:12px;color:var(--green);">✅
+          SEBI Compliant</span>
+        <span
+          style="background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.2);padding:8px 16px;border-radius:8px;font-size:12px;color:var(--green);">🛡️
+          Trusted Gateway</span>
+      </div>
+
+      <div class="payment-options">
+        <!-- QR -->
+        <div class="payment-card">
+          <div class="payment-icon">📱</div>
+          <div class="payment-title">UPI / QR Code</div>
+          <div class="payment-sub">Scan with any UPI app — PhonePe, GPay, Paytm</div>
+          <div class="qr-box">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <!-- QR code representation -->
+              <rect width="100" height="100" fill="white" />
+              <rect x="10" y="10" width="30" height="30" fill="none" stroke="black" stroke-width="3" />
+              <rect x="14" y="14" width="22" height="22" fill="black" />
+              <rect x="60" y="10" width="30" height="30" fill="none" stroke="black" stroke-width="3" />
+              <rect x="64" y="14" width="22" height="22" fill="black" />
+              <rect x="10" y="60" width="30" height="30" fill="none" stroke="black" stroke-width="3" />
+              <rect x="14" y="64" width="22" height="22" fill="black" />
+              <rect x="60" y="60" width="8" height="8" fill="black" />
+              <rect x="72" y="60" width="8" height="8" fill="black" />
+              <rect x="84" y="60" width="8" height="8" fill="black" />
+              <rect x="60" y="72" width="8" height="8" fill="black" />
+              <rect x="84" y="72" width="8" height="8" fill="black" />
+              <rect x="60" y="84" width="8" height="8" fill="black" />
+              <rect x="72" y="84" width="8" height="8" fill="black" />
+              <rect x="84" y="84" width="8" height="8" fill="black" />
+              <rect x="44" y="10" width="8" height="8" fill="black" />
+              <rect x="44" y="22" width="8" height="8" fill="black" />
+              <rect x="44" y="34" width="8" height="8" fill="black" />
+              <rect x="10" y="44" width="8" height="8" fill="black" />
+              <rect x="22" y="44" width="8" height="8" fill="black" />
+              <rect x="34" y="44" width="8" height="8" fill="black" />
+              <rect x="44" y="44" width="8" height="8" fill="black" />
+            </svg>
+          </div>
+          <div style="font-size:14px;color:var(--orange);font-weight:700;margin-bottom:4px;">Scan &amp; Pay</div>
+          <div style="font-size:12px;color:var(--muted);">UPI ID: stoxvera@axisbank</div>
+          <button class="submit-btn" style="margin-top:16px;"
+            onclick="alert('Please scan the QR code with your UPI app to complete payment.')">Pay via UPI</button>
+        </div>
+
+        <!-- BANK TRANSFER -->
+        <div class="payment-card">
+          <div class="payment-icon">🏦</div>
+          <div class="payment-title">Bank Transfer / NEFT</div>
+          <div class="payment-sub">Direct bank transfer — safe &amp; instant</div>
+          <div style="text-align:left;width:100%;">
+            <div class="bank-detail" style="margin-bottom:14px;">
+              <div class="label">Account Name</div>
+              <div class="val" style="font-size:15px;font-weight:700;color:var(--text);margin-top:4px;">STOXVERA
+                RESEARCH <button class="copy-btn" onclick="copyText('STOXVERA RESEARCH')">Copy</button></div>
+            </div>
+            <div class="bank-detail" style="margin-bottom:14px;">
+              <div class="label">Account Number</div>
+              <div class="val" style="font-size:15px;font-weight:700;color:var(--text);margin-top:4px;">925020001092774
+                <button class="copy-btn" onclick="copyText('925020001092774')">Copy</button>
+              </div>
+            </div>
+            <div class="bank-detail" style="margin-bottom:14px;">
+              <div class="label">IFSC Code</div>
+              <div class="val" style="font-size:15px;font-weight:700;color:var(--text);margin-top:4px;">UTIB0001062
+                <button class="copy-btn" onclick="copyText('UTIB0001062')">Copy</button>
+              </div>
+            </div>
+            <div class="bank-detail">
+              <div class="label">Branch</div>
+              <div class="val" style="font-size:15px;font-weight:700;color:var(--text);margin-top:4px;">Dindoshi, Mumbai
+                · Axis Bank</div>
+            </div>
+          </div>
+          <div
+            style="margin-top:16px;padding:10px;background:rgba(255,107,0,.05);border-radius:8px;font-size:11px;color:var(--muted);">
+            After transfer, WhatsApp your payment screenshot to confirm your subscription.
+          </div>
+        </div>
+
+        <!-- CARD (3D FLIP) -->
+        <div class="payment-card">
+          <div class="payment-icon">💳</div>
+          <div class="payment-title">Credit / Debit Card</div>
+          <div class="payment-sub">Hover to see card back · Demo UI</div>
+          <div class="card-3d">
+            <div class="card-inner">
+              <div class="card-front">
+                <div class="card-chip"></div>
+                <div class="card-num">•••• •••• •••• ••••</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div style="font-size:12px;color:#aaa;">Card Holder<br><span style="color:white;">YOUR NAME</span>
+                  </div>
+                  <div style="font-size:12px;color:#aaa;">Expires<br><span style="color:white;">MM/YY</span></div>
+                </div>
+                <div class="card-logo">STOXVERA</div>
+              </div>
+              <div class="card-back">
+                <div class="card-back-strip"></div>
+                <div
+                  style="background:#eee;height:40px;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding:0 12px;font-family:monospace;font-size:16px;color:#333;letter-spacing:3px;">
+                  CVV</div>
+                <div style="font-size:11px;color:#aaa;margin-top:12px;line-height:1.6;">This card is issued by Stoxvera
+                  Research for demonstration purposes only. Actual payment will be processed through our secure payment
+                  gateway.</div>
+              </div>
+            </div>
+          </div>
+          <button class="submit-btn" style="margin-top:8px;"
+            onclick="alert('Card payment will be activated soon. Please use UPI or Bank Transfer for now.')">Pay via
+            Card</button>
+        </div>
+      </div>
+
+      <div
+        style="text-align:center;margin-top:40px;padding:24px;background:rgba(255,107,0,.04);border:1px solid rgba(255,107,0,.15);border-radius:14px;max-width:600px;margin-left:auto;margin-right:auto;">
+        <div style="font-size:14px;color:var(--muted);line-height:1.8;">
+          After payment, send your payment confirmation to:<br>
+          <a href="mailto:sales@stoxvera.in"
+            style="color:var(--orange);font-weight:700;font-size:15px;">sales@stoxvera.in</a><br>
+          <small>Our team will activate your subscription within 2 hours.</small>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PAGE: CONTACT
+══════════════════════════════════════ -->
+  <div class="page" id="page-contact">
+    <section>
+      <div class="section-label">Get In Touch</div>
+      <div class="section-title">Contact Us</div>
+
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="c-icon">📧</div>
+            <div>
+              <div
+                style="font-size:12px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">
+                Email</div>
+              <a href="mailto:sales@stoxvera.in"
+                style="color:var(--orange);font-size:16px;font-weight:700;text-decoration:none;">sales@stoxvera.in</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="c-icon">🏢</div>
+            <div>
+              <div
+                style="font-size:12px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">
+                Company</div>
+              <div style="font-size:16px;font-weight:700;">Stoxvera Research</div>
+              <div style="font-size:13px;color:var(--muted);">Mumbai, Maharashtra</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="c-icon">🛡️</div>
+            <div>
+              <div
+                style="font-size:12px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">
+                SEBI Registration</div>
+              <div style="font-size:16px;font-weight:700;color:var(--green);">INH000021881</div>
+              <div style="font-size:13px;color:var(--muted);">Research Analyst</div>
+            </div>
+          </div>
+          <div
+            style="padding:20px;background:var(--glass);border:1px solid var(--glassBorder);border-radius:12px;margin-top:16px;">
+            <div style="font-size:13px;color:var(--muted);line-height:1.8;">
+              <strong style="color:var(--orange);">Complaint?</strong><br>
+              SEBI SCORES: <a href="https://scores.gov.in" style="color:var(--orange);"
+                target="_blank">scores.gov.in</a><br>
+              SEBI Toll-Free: 1800 22 7575
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="kyc-wrap" style="margin:0;">
+          <div id="contactFormBox">
+            <div class="field">
+              <label>Full Name</label>
+              <input type="text" id="ct_name" placeholder="Your name">
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input type="email" id="ct_email" placeholder="your@email.com">
+            </div>
+            <div class="field">
+              <label>Mobile</label>
+              <input type="tel" id="ct_mobile" placeholder="+91 9XXXXXXXXX">
+            </div>
+            <div class="field">
+              <label>Message</label>
+              <textarea id="ct_message" rows="4" placeholder="Your query or message..."
+                style="resize:vertical;"></textarea>
+            </div>
+            <button class="submit-btn" id="ctBtn" onclick="submitContact()">📤 Send Message</button>
+            <div class="msg-error" id="ctError"></div>
+          </div>
+          <div class="msg-success" id="ctSuccess">
+            ✅ Message sent! We'll reply within 24 hours.
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PAGE: PRIVACY POLICY
+══════════════════════════════════════ -->
+  <div class="page" id="page-privacy">
+    <div class="legal-wrap">
+      <h1>Privacy Policy</h1>
+      <div class="updated">Last Updated: April 2025</div>
+
+      <h2>1. Introduction</h2>
+      <p>Stoxvera ("we", "our", "us") is committed to protecting your personal information. This Privacy Policy explains
+        how we collect, use, disclose, and safeguard your information when you use our research advisory services.</p>
+
+      <h2>2. Information We Collect</h2>
+      <ul>
+        <li>Personal identification: Full name, email address, mobile number, city</li>
+        <li>KYC documents: Aadhaar card, PAN card, selfie (as required by SEBI)</li>
+        <li>Financial information: Investment capital range (collected for suitability assessment)</li>
+        <li>Usage data: Pages visited, time spent, device information</li>
+      </ul>
+
+      <h2>3. How We Use Your Information</h2>
+      <ul>
+        <li>To provide and manage your research subscription</li>
+        <li>To comply with SEBI KYC and regulatory requirements</li>
+        <li>To send trading research recommendations and alerts</li>
+        <li>To process payments and maintain financial records</li>
+        <li>To respond to inquiries and provide customer support</li>
+      </ul>
+
+      <h2>4. Data Security</h2>
+      <p>We implement industry-standard security measures including SSL encryption, secure servers, and access controls
+        to protect your personal data. KYC documents are stored with 256-bit encryption.</p>
+
+      <h2>5. Data Sharing</h2>
+      <p>We do not sell, trade, or rent your personal information to third parties. We may share data with SEBI or other
+        regulatory authorities when legally required.</p>
+
+      <h2>6. Cookies</h2>
+      <p>Our website uses cookies to enhance user experience. You may disable cookies through your browser settings,
+        though this may affect functionality.</p>
+
+      <h2>7. Your Rights</h2>
+      <ul>
+        <li>Access your personal data held by us</li>
+        <li>Request correction of inaccurate data</li>
+        <li>Request deletion of your account and data</li>
+        <li>Withdraw consent at any time</li>
+      </ul>
+
+      <h2>8. Contact</h2>
+      <p>For privacy-related queries: <a href="mailto:sales@stoxvera.in"
+          style="color:var(--orange);">sales@stoxvera.in</a></p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     PAGE: TERMS & CONDITIONS
+══════════════════════════════════════ -->
+  <div class="page" id="page-terms">
+    <div class="legal-wrap">
+      <h1>Terms &amp; Conditions</h1>
+      <div class="updated">stoxvera.in · Effective Date: April 2025</div>
+
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or using Stoxvera's services, you agree to be bound by these Terms and Conditions. If you
+        disagree, please do not use our services.</p>
+
+      <h2>2. Nature of Services</h2>
+      <p>Stoxvera provides independent stock market research and recommendations. We are a SEBI Registered Research
+        Analyst (INH000021881). Our services are limited to research recommendations only and do not constitute
+        portfolio management, investment advisory, or wealth management services.</p>
+
+      <h2>3. Risk Disclosure</h2>
+      <ul>
+        <li>Investment in securities market is subject to market risks.</li>
+        <li>Past performance is not indicative of future results.</li>
+        <li>Stoxvera does not guarantee any returns or profits.</li>
+        <li>Options trading involves high risk including total loss of capital.</li>
+        <li>Read all related documents carefully before investing.</li>
+      </ul>
+
+      <h2>4. Fee Policy</h2>
+      <p>All fees must be paid only to the official Stoxvera bank account (STOXVERA RESEARCH, A/C: 925020001092774,
+        IFSC: UTIB0001062) or through SEBI's CeFCoM mechanism. Payments made to individual accounts will not be honored.
+      </p>
+
+      <h2>5. Refund Policy</h2>
+      <p>Subscription fees are non-refundable once services are activated. In case of service non-delivery, refund
+        requests may be raised at sales@stoxvera.in within 7 days of purchase.</p>
+
+      <h2>6. Prohibited Activities</h2>
+      <ul>
+        <li>Sharing research recommendations with non-subscribers</li>
+        <li>Using our content for commercial redistribution</li>
+        <li>Misrepresenting our research as guaranteed returns</li>
+      </ul>
+
+      <h2>7. Limitation of Liability</h2>
+      <p>Stoxvera shall not be liable for any financial losses arising from use of our research recommendations. All
+        investment decisions are solely the investor's responsibility.</p>
+
+      <h2>8. Governing Law</h2>
+      <p>These terms are governed by the laws of India. Any disputes shall be subject to jurisdiction of courts in
+        Mumbai, Maharashtra.</p>
+
+      <h2>9. Contact</h2>
+      <p>Email: <a href="mailto:sales@stoxvera.in" style="color:var(--orange);">sales@stoxvera.in</a></p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     FOOTER (shown on all pages)
+══════════════════════════════════════ -->
+  <footer id="siteFooter">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">STOXVERA</div>
+        <p class="footer-text">SEBI Registered Research Analyst · INH000021881<br>SEBI Registered Research Analyst
+          (INH000021881). Expert research-based trading services by Rajendra Harishchandra Jadhav with 20+ years of
+          market experience.</p>
+        <div style="margin-top:20px;">
+          <div style="font-size:12px;color:var(--muted);">📧 <a href="mailto:sales@stoxvera.in"
+              style="color:var(--orange);text-decoration:none;">sales@stoxvera.in</a></div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <a onclick="showPage('home')">Home</a>
+        <a onclick="showPage('pricing')">Pricing</a>
+        <a onclick="showPage('bank')">Bank Details</a>
+        <a onclick="showPage('analyst')">Research Analyst</a>
+        <a onclick="showPage('kyc')">KYC</a>
+        <a onclick="showPage('contact')">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a onclick="showPage('disclosure')">Disclosure</a>
+        <a onclick="showPage('privacy')">Privacy Policy</a>
+        <a onclick="showPage('terms')">Terms &amp; Conditions</a>
+        <a href="https://scores.gov.in" target="_blank">SEBI SCORES</a>
+        <a href="mailto:sales@stoxvera.in">Grievance</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Stoxvera Research. All rights reserved.</span>
+      <span style="color:var(--orange);">SEBI RA: INH000021881</span>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════
+     PAGE: DISCLOSURE
+══════════════════════════════════════ -->
+  <div class="page" id="page-disclosure">
+    <div class="legal-wrap" style="max-width:860px;">
+
+      <!-- Page Header -->
+      <div style="border-left:4px solid var(--orange);padding-left:20px;margin-bottom:40px;">
+        <div
+          style="font-size:11px;font-weight:600;letter-spacing:2px;color:var(--orange);text-transform:uppercase;margin-bottom:8px;">
+          Official Document</div>
+        <h1 style="font-size:clamp(28px,4vw,42px);font-weight:800;margin-bottom:8px;">Disclosure</h1>
+        <div class="updated">Stoxvera Research · SEBI RA: INH000021881 · Effective: April 2025</div>
+      </div>
+
+      <!-- 1. Purpose -->
+      <div
+        style="background:rgba(255,107,0,.05);border:1px solid rgba(255,107,0,.2);border-radius:14px;padding:28px 32px;margin-bottom:28px;">
+        <h2 style="font-size:16px;font-weight:700;color:var(--orange);margin-bottom:14px;letter-spacing:.5px;">Purpose
+          of this Document</h2>
+        <p>The purpose of the document is to provide essential information about the Research Services in a manner to
+          assist and enable the prospective client/client in making an informed decision for engaging in Research
+          services before onboarding.</p>
+      </div>
+
+      <!-- 2. History -->
+      <div
+        style="background:var(--glass);border:1px solid var(--glassBorder);border-radius:14px;padding:28px 32px;margin-bottom:28px;">
+        <h2 style="font-size:16px;font-weight:700;color:var(--orange);margin-bottom:14px;letter-spacing:.5px;">History,
+          Present Business and Background</h2>
+        <p>Rajendra Jadhav, SEBI Research Analyst: <strong style="color:var(--orange);">INH000021881</strong> in the
+          name <strong style="color:var(--orange);">STOXVERA</strong>, and is engaged in offering research and
+          recommendation services.</p>
+      </div>
+
+      <!-- 3. Terms & Conditions of Research Services -->
+      <div
+        style="background:var(--glass);border:1px solid var(--glassBorder);border-radius:14px;padding:28px 32px;margin-bottom:28px;">
+        <h2 style="font-size:16px;font-weight:700;color:var(--orange);margin-bottom:18px;letter-spacing:.5px;">Terms and
+          Conditions of Research Services</h2>
+        <ul>
+          <li>The Research Services will be limited to providing independent research recommendation and shall not be
+            involved in any advisory or portfolio allocation services.</li>
+          <li>The Research Analyst never guarantees the returns on the recommendation provided. Investor shall take note
+            that Investment/trading in stocks/Index or other securities is always subject to market risk. Past
+            performance is never a guarantee of same future results.</li>
+          <li>The Research Analyst shall not be responsible for any loss to the Investors.</li>
+        </ul>
+      </div>
+
+      <!-- 4. Disciplinary History -->
+      <div
+        style="background:rgba(0,230,118,.04);border:1px solid rgba(0,230,118,.18);border-radius:14px;padding:28px 32px;margin-bottom:28px;">
+        <h2 style="font-size:16px;font-weight:700;color:var(--green);margin-bottom:18px;letter-spacing:.5px;">
+          Disciplinary History</h2>
+        <ul>
+          <li>There are no pending material litigations or legal proceedings against the Research Analyst.</li>
+          <li>As on date, no penalties / directions have been issued by SEBI under the SEBI Act or Regulations made
+            thereunder against the Research Analyst relating to Research Analyst services.</li>
+        </ul>
+      </div>
+
+      <!-- 5. Associates -->
+      <div
+        style="background:var(--glass);border:1px solid var(--glassBorder);border-radius:14px;padding:28px 32px;margin-bottom:28px;">
+        <h2 style="font-size:16px;font-weight:700;color:var(--orange);margin-bottom:18px;letter-spacing:.5px;">Details
+          of Associates</h2>
+        <div
+          style="display:inline-flex;align-items:center;gap:14px;background:rgba(255,107,0,.07);border:1px solid rgba(255,107,0,.2);border-radius:10px;padding:14px 20px;">
+          <span style="font-size:28px;">👤</span>
+          <div>
+            <div style="font-size:16px;font-weight:800;color:var(--text);letter-spacing:.5px;">ARBAAZ MANIHAR</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px;">Associate · Stoxvera Research</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Full Disclosures -->
+      <div
+        style="background:var(--glass);border:1px solid var(--glassBorder);border-radius:14px;padding:28px 32px;margin-bottom:28px;">
+        <h2 style="font-size:16px;font-weight:700;color:var(--orange);margin-bottom:18px;letter-spacing:.5px;">
+          Disclosures with respect to Research and Recommendations Services</h2>
+        <ul>
+          <li>The Research Analyst or any of its officer/employee does not trade in securities which are subject matter
+            of recommendation.</li>
+          <li>There are no actual or potential conflicts of interest arising from any connection to or association with
+            any issuer of products/securities, including any material information or facts that might compromise its
+            objectivity or independence in the carrying on of Research Analyst services. Such conflict of interest shall
+            be disclosed to the client as and when they arise.</li>
+          <li>Research Analyst or its employee or its associates have not received any compensation from the company
+            which is subject matter of recommendation.</li>
+          <li>Research Analyst or its employee or its associates have not managed or co-managed the public offering of
+            any company.</li>
+          <li>Research Analyst or its employee or its associates have not received any compensation for investment
+            banking or merchant banking of brokerage services from the subject company.</li>
+          <li>Research Analyst or its employee or its associates have not received any compensation for products or
+            services other than above from the subject company.</li>
+          <li>Research Analyst or its employee or its associates have not received any compensation or other benefits
+            from the Subject Company or 3rd party in connection with the research report/recommendation.</li>
+          <li>The subject company was not a client of Research Analyst or its employee or its associates during twelve
+            months preceding the date of recommendation services provided.</li>
+          <li>Research Analysts or its employee or its associates has not served as an officer, director or employee of
+            the subject company.</li>
+          <li>Research Analysts has not been engaged in market making activity of the subject company.</li>
+        </ul>
+      </div>
+
+      <!-- 7. Standard Warning -->
+      <div
+        style="background:linear-gradient(135deg,rgba(255,107,0,.12),rgba(255,107,0,.04));border:2px solid rgba(255,107,0,.4);border-radius:14px;padding:32px;text-align:center;margin-bottom:20px;">
+        <div
+          style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;">
+          ⚠️ Standard Warning</div>
+        <div style="font-size:17px;font-weight:700;color:var(--text);line-height:1.9;">
+          "Investment in securities market are subject to market risks.<br>Read all the related documents carefully
+          before investing."
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DISCLAIMER BAR -->
+  <div class="disclaimer-bar">
+    <marquee scrollamount="4">
+      ⚠️ Disclaimer: Investment in securities market is subject to market risk, we do not offer any guaranteed profit
+      services or Fixed Returns. Before taking Expert Advice & any services with Stoxvera, Client should read
+      disclaimer, terms and conditions, refund policy of the company, we do not accept advisory fee in any personal or
+      Individual bank account, any payment made should be in favor of Stoxvera. | Complaints: sales@stoxvera.in | SEBI
+      Toll-Free: 1800 22 7575
+    </marquee>
+  </div>
+
+  <!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+  <script>
+    // ─── EmailJS INIT ───
+    // IMPORTANT: Replace with your actual EmailJS credentials
+    // Sign up free at emailjs.com, connect Hostinger SMTP
+    const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';   // e.g. 'service_stoxvera'
+    const EMAILJS_TEMPLATE_LEAD = 'YOUR_TEMPLATE_ID_LEAD'; // e.g. 'template_lead'
+    const EMAILJS_TEMPLATE_KYC = 'YOUR_TEMPLATE_ID_KYC';  // e.g. 'template_kyc'
+    const EMAILJS_TEMPLATE_CONTACT = 'YOUR_TEMPLATE_ID_CT'; // e.g. 'template_contact'
+    const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';    // from EmailJS dashboard
+
+    (function () {
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+    })();
+
+    // ─── LOADING SCREEN ───
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const ls = document.getElementById('loadingScreen');
+        ls.style.opacity = '0';
+        setTimeout(() => ls.style.display = 'none', 600);
+      }, 1800);
+    });
+
+    // ─── PAGE NAVIGATION ───
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + id).classList.add('active');
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      const navEl = document.getElementById('nav-' + id);
+      if (navEl) navEl.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ─── HAMBURGER ───
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    // ─── TICKER ───
+    const tickerData = [
+      { name: 'NIFTY 50', val: '22,350.50', chg: '+185.30', pct: '+0.84%', up: true },
+      { name: 'SENSEX', val: '73,651.35', chg: '+612.45', pct: '+0.84%', up: true },
+      { name: 'BANKNIFTY', val: '48,920.15', chg: '-124.80', pct: '-0.25%', up: false },
+      { name: 'NIFTY IT', val: '33,450.60', chg: '+320.10', pct: '+0.97%', up: true },
+      { name: 'NIFTY AUTO', val: '19,850.75', chg: '+95.25', pct: '+0.48%', up: true },
+      { name: 'NIFTY PHARMA', val: '16,220.40', chg: '-45.80', pct: '-0.28%', up: false },
+      { name: 'GOLD', val: '₹72,350/10g', chg: '+280', pct: '+0.39%', up: true },
+      { name: 'CRUDE OIL', val: '$82.50', chg: '-0.65', pct: '-0.78%', up: false },
+    ];
+    const track = document.getElementById('tickerTrack');
+    // Duplicate for seamless loop
+    [...tickerData, ...tickerData].forEach(item => {
+      const el = document.createElement('span');
+      el.className = 'ticker-item';
+      el.innerHTML = `<span class="ticker-name">${item.name}</span><span class="ticker-val">${item.val}</span><span class="ticker-chg ${item.up ? 'up' : 'dn'}">${item.up ? '▲' : '▼'} ${item.chg} (${item.pct})</span>`;
+      track.appendChild(el);
+    });
+
+    // ─── MARKET CARDS ───
+    const markets = [
+      { name: 'NIFTY 50', val: '22,350', chg: '+185 (+0.84%)', up: true },
+      { name: 'SENSEX', val: '73,651', chg: '+612 (+0.84%)', up: true },
+      { name: 'BANKNIFTY', val: '48,920', chg: '-124 (-0.25%)', up: false },
+      { name: 'NIFTY IT', val: '33,450', chg: '+320 (+0.97%)', up: true },
+      { name: 'NIFTY AUTO', val: '19,850', chg: '+95 (+0.48%)', up: true },
+      { name: 'GOLD', val: '₹72,350', chg: '+280 (+0.39%)', up: true },
+    ];
+    const mg = document.getElementById('marketGrid');
+    markets.forEach(m => {
+      const pts = Array.from({ length: 20 }, (_, i) => {
+        const y = 25 + Math.random() * 20 * (m.up ? (1 - i / 20) : (i / 20));
+        return `${i * 5.2},${y}`;
+      }).join(' ');
+      mg.innerHTML += `
+    <div class="market-card">
+      <div class="market-name">${m.name}</div>
+      <div class="market-val">${m.val}</div>
+      <div class="market-chg ${m.up ? 'up' : 'dn'}">${m.up ? '▲' : '▼'} ${m.chg}</div>
+      <div class="mini-chart">
+        <svg viewBox="0 0 104 50" preserveAspectRatio="none">
+          <polyline points="${pts}" fill="none" stroke="${m.up ? '#00e676' : '#ff1744'}" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>`;
+    });
+
+    // ─── TESTIMONIALS ───
+    const testis = [
+      { text: "Stoxvera's research calls helped me grow my portfolio by 40% in 3 months. The accuracy is remarkable!", author: "Priya Sharma", role: "Equity Trader, Pune", stars: 5 },
+      { text: "Finally a SEBI registered analyst I can trust. Every call comes with clear entry, target and stop loss.", author: "Arun Patel", role: "Options Trader, Ahmedabad", stars: 5 },
+      { text: "The Platinum plan is absolutely worth every rupee. Dedicated manager and VIP tips are game-changing.", author: "Vikram Nair", role: "Investor, Bangalore", stars: 5 },
+      { text: "24/7 support team is always available. They guided me through my first options trade perfectly.", author: "Sneha Joshi", role: "Beginner Trader, Nashik", stars: 5 },
+      { text: "4:1 reward ratio strategy has completely transformed my trading approach. Highly recommended!", author: "Deepak Mehta", role: "Swing Trader, Surat", stars: 5 },
+      { text: "Rajendra sir's 20+ years of experience shows in every single recommendation. Pure market expertise.", author: "Ritu Singh", role: "Day Trader, Delhi", stars: 5 },
+    ];
+    const tt = document.getElementById('testiTrack');
+    [...testis, ...testis].forEach(t => {
+      tt.innerHTML += `
+    <div class="testi-card">
+      <div class="testi-stars">${'⭐'.repeat(t.stars)}</div>
+      <div class="testi-text">"${t.text}"</div>
+      <div class="testi-author">${t.author}</div>
+      <div class="testi-role">${t.role}</div>
+    </div>`;
+    });
+
+    // ─── PARTICLES ───
+    const pc = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+    left:${Math.random() * 100}%;
+    top:${Math.random() * 100}%;
+    --d:${6 + Math.random() * 8}s;
+    --ty:${-20 - Math.random() * 60}px;
+    --tx:${(Math.random() - 0.5) * 40}px;
+    animation-delay:${Math.random() * 8}s;
+    width:${1 + Math.random() * 3}px;
+    height:${1 + Math.random() * 3}px;
+  `;
+      pc.appendChild(p);
+    }
+
+    // ─── FILE UPLOAD DISPLAY ───
+    function showFile(input, labelId) {
+      const label = document.getElementById(labelId);
+      if (input.files && input.files[0]) {
+        label.textContent = '✅ ' + input.files[0].name;
+        label.style.color = 'var(--green)';
+      }
+    }
+
+    // ─── COPY TEXT ───
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => {
+        alert('Copied: ' + txt);
+      });
+    }
+
+    // ─── LEAD FORM SUBMIT ───
+    async function submitLead() {
+      const name = document.getElementById('lead_name').value.trim();
+      const email = document.getElementById('lead_email').value.trim();
+      const mobile = document.getElementById('lead_mobile').value.trim();
+      const city = document.getElementById('lead_city').value.trim();
+      const capital = document.getElementById('lead_capital').value;
+      const errEl = document.getElementById('leadError');
+
+      if (!name || !email || !mobile || !capital) {
+        errEl.textContent = '⚠️ Please fill all required fields.';
+        errEl.style.display = 'block';
+        return;
+      }
+      errEl.style.display = 'none';
+
+      const btn = document.getElementById('leadBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Sending...';
+
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_LEAD, {
+          to_email: 'sales@stoxvera.in',
+          from_name: name,
+          from_email: email,
+          mobile: mobile,
+          city: city || 'Not provided',
+          capital: capital,
+          subject: '🔥 New Lead – Stoxvera',
+          message: `New lead from homepage:\n\nName: ${name}\nEmail: ${email}\nMobile: ${mobile}\nCity: ${city || 'N/A'}\nCapital: ${capital}`,
+        });
+
+        document.getElementById('leadFormBox').style.display = 'none';
+        document.getElementById('leadSuccess').style.display = 'block';
+        setTimeout(() => showPage('kyc'), 2500);
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = '👉 Get Started';
+        errEl.textContent = '⚠️ Email service not configured yet. Please contact sales@stoxvera.in directly.';
+        errEl.style.display = 'block';
+        // Still redirect after 3 seconds
+        setTimeout(() => showPage('kyc'), 3000);
+      }
+    }
+
+    // ─── KYC SUBMIT ───
+    async function submitKYC() {
+      const name = document.getElementById('kyc_name').value.trim();
+      const email = document.getElementById('kyc_email').value.trim();
+      const mobile = document.getElementById('kyc_mobile').value.trim();
+      const capital = document.getElementById('kyc_capital').value;
+      const aadhar = document.getElementById('aadharFile').files[0];
+      const errEl = document.getElementById('kycError');
+
+      if (!name || !email || !mobile || !capital || !aadhar) {
+        errEl.textContent = '⚠️ Please fill all required fields and upload Aadhaar card.';
+        errEl.style.display = 'block';
+        return;
+      }
+      errEl.style.display = 'none';
+
+      const btn = document.getElementById('kycBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Submitting KYC...';
+
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_KYC, {
+          to_email: 'sales@stoxvera.in',
+          from_name: name,
+          from_email: email,
+          mobile: mobile,
+          capital: capital,
+          subject: '📋 New KYC Submission – Stoxvera',
+          message: `New KYC submission:\n\nName: ${name}\nEmail: ${email}\nMobile: ${mobile}\nCapital: ${capital}\nAadhaar: ${aadhar.name}\nPAN: ${document.getElementById('panFile').files[0]?.name || 'Not uploaded'}`,
+        });
+
+        document.getElementById('kycFormBox').style.display = 'none';
+        document.getElementById('kycSuccess').style.display = 'block';
+        setTimeout(() => showPage('payment'), 2500);
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = '✅ Submit KYC & Proceed to Payment';
+        errEl.textContent = '⚠️ Email service not configured yet. Redirecting to payment...';
+        errEl.style.display = 'block';
+        setTimeout(() => showPage('payment'), 3000);
+      }
+    }
+
+    // ─── CONTACT SUBMIT ───
+    async function submitContact() {
+      const name = document.getElementById('ct_name').value.trim();
+      const email = document.getElementById('ct_email').value.trim();
+      const mobile = document.getElementById('ct_mobile').value.trim();
+      const message = document.getElementById('ct_message').value.trim();
+      const errEl = document.getElementById('ctError');
+
+      if (!name || !email || !message) {
+        errEl.textContent = '⚠️ Please fill name, email and message.';
+        errEl.style.display = 'block';
+        return;
+      }
+      errEl.style.display = 'none';
+
+      const btn = document.getElementById('ctBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Sending...';
+
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_CONTACT, {
+          to_email: 'sales@stoxvera.in',
+          from_name: name,
+          from_email: email,
+          mobile: mobile || 'Not provided',
+          subject: '📞 Contact Form – Stoxvera',
+          message: `Contact form query:\n\nName: ${name}\nEmail: ${email}\nMobile: ${mobile || 'N/A'}\n\nMessage:\n${message}`,
+        });
+
+        document.getElementById('contactFormBox').style.display = 'none';
+        document.getElementById('ctSuccess').style.display = 'block';
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = '📤 Send Message';
+        errEl.textContent = '⚠️ Email not configured yet. Please email sales@stoxvera.in directly.';
+        errEl.style.display = 'block';
+      }
+    }
+
+    // ─── LIVE MARKET ANIMATION ───
+    function animateMarkets() {
+      const cards = document.querySelectorAll('.market-val');
+      cards.forEach(card => {
+        const current = parseFloat(card.textContent.replace(/[₹,]/g, ''));
+        const change = (Math.random() - 0.5) * 20;
+        const prefix = card.textContent.includes('₹') ? '₹' : '';
+        card.textContent = prefix + (current + change).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+      });
+    }
+    setInterval(animateMarkets, 3000);
+  </script>
+</body>
+
+</html>
